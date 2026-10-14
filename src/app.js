@@ -5,6 +5,8 @@ import morgan from 'morgan'; //importamos morgan para poder ver las peticiones q
 import cors from 'cors'; //importamos cors para permitir peticiones desde otros dominios
 import cookieParser from 'cookie-parser'; //importamos cookieParser para poder recibir cookies en las peticiones
 import authRoutes from '#routes/auth.routes.js';
+import securityMiddleware from '#middleware/security.middleware.js'; //importamos securityMiddleware para proteger la app de ataques de denegacion de servicio 
+
 
 const app = express(); //creamos una constante que se llamara app y que sera igual a express
 
@@ -16,6 +18,8 @@ app.use(cors()); //usamos cors para permitir peticiones desde otros dominios
 app.use(cookieParser()); //usamos cookieParser para poder recibir cookies en las peticiones
 
 app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } })); //usamos morgan para poder ver las peticiones que se hacen a la app y las enviamos al logger
+
+app.use(securityMiddleware); //usamos securityMiddleware para proteger la app de ataques de denegacion de servicio
 
 app.get('/', (req, res) => {
   logger.info('Hello from acquisitions!'); //cuando se haga una peticion get a la ruta raiz, se enviara un mensaje de hello world
