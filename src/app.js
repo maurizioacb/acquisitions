@@ -17,24 +17,38 @@ app.use(morgan('combined', { stream: { write: (message) => logger.info(message.t
 app.use(cors()); //usamos cors para permitir peticiones desde otros dominios
 app.use(cookieParser()); //usamos cookieParser para poder recibir cookies en las peticiones
 
-app.use(morgan('combined', { stream: { write: (message) => logger.info(message.trim()) } })); //usamos morgan para poder ver las peticiones que se hacen a la app y las enviamos al logger
+app.use(
+  morgan('combined', {
+    stream: { write: message => logger.info(message.trim()) },
+  })
+);
 
-app.use(securityMiddleware); //usamos securityMiddleware para proteger la app de ataques de denegacion de servicio
+app.use(securityMiddleware);
 
 app.get('/', (req, res) => {
-  logger.info('Hello from acquisitions!'); //cuando se haga una peticion get a la ruta raiz, se enviara un mensaje de hello world
-  res.status(200).send('Hello from acquisitions!'); //cuando se haga una peticion get a la ruta raiz, se enviara un mensaje de hello world
+  logger.info('Hello from Acquisitions!');
+
+  res.status(200).send('Hello from Acquisitions!');
 });
 
 app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString(), uptime: process.uptime() });
+  res
+    .status(200)
+    .json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+    });
 });
 
 app.get('/api', (req, res) => {
   res.status(200).json({ message: 'Acquisitions API is running!' });
 });
 
-app.use('/api/auth', authRoutes); //usamos authRoutes para manejar las rutas de autenticacion 
+app.use('/api/auth', authRoutes);
 
-export default app; //exportamos la constante app para que pueda ser usada en otros archivos
- 
+app.use((req, res) => {
+  res.status(404).json({ error: 'Route not found' });
+});
+
+export default app;
