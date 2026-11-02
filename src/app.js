@@ -6,7 +6,7 @@ import cors from 'cors'; //importamos cors para permitir peticiones desde otros 
 import cookieParser from 'cookie-parser'; //importamos cookieParser para poder recibir cookies en las peticiones
 import authRoutes from '#routes/auth.routes.js';
 import securityMiddleware from '#middleware/security.middleware.js'; //importamos securityMiddleware para proteger la app de ataques de denegacion de servicio 
-
+import usersRoutes from '#routes/users.routes.js'; //importamos usersRoutes para poder usar las rutas de usuarios
 
 const app = express(); //creamos una constante que se llamara app y que sera igual a express
 
@@ -50,5 +50,7 @@ app.use('/api/auth', authRoutes);
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
+
+app.use('/api/users', usersRoutes);
 
 export default app;
